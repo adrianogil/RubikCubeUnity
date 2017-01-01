@@ -25,19 +25,15 @@ public class RubikCubeGenerator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		// for (int x = 0; x < 3; x++) {
-		// 	for (int y = 0; y < 3; y++) {
-		// 		for (int z = 0; z < 3; z++) {
-		// 			cubeMatrix [x, y, z] = Instantiate (cubePrefab) as GameObject;
-		// 			cubeMatrix [x, y, z].transform.SetParent (transform);
-		// 			cubeMatrix [x, y, z].transform.localPosition = new Vector3 (x, y, z);
-		// 		}
-		// 	}
-		// }
-		GameObject cube = CubeGeneration.Generate(Vector3.zero, Vector3.one, material);
-		cube.transform.SetParent(transform);
-		cube.transform.localPosition = Vector3.zero;
-
+		for (int x = 0; x < 3; x++) {
+			for (int y = 0; y < 3; y++) {
+				for (int z = 0; z < 3; z++) {
+					cubeMatrix [x, y, z] = CubeGeneration.Generate(Vector3.zero, Vector3.one, material);
+					cubeMatrix [x, y, z].transform.SetParent (transform);
+					cubeMatrix [x, y, z].transform.localPosition = new Vector3 (x, y, z);
+				}
+			}
+		}
 	}
 
 	void UpdateCubeMatrix()

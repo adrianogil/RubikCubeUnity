@@ -17,10 +17,35 @@ public static class CubeGeneration  {
         GameObject cubeFace = null;
         Vector3 direction = Vector3.zero;
 
-		direction = Vector3.up + Vector3.right;
+		direction = Vector3.up + Vector3.right + Vector3.forward;
         cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.right, material, GenerateTexture(Color.red));
         cubeFace.transform.SetParent(cube.transform);
 		cubeFace.transform.localPosition = Vector3.zero;
+
+        direction = Vector3.up + Vector3.right - Vector3.forward;
+        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.right, material, GenerateTexture(Color.white));
+        cubeFace.transform.SetParent(cube.transform);
+        cubeFace.transform.localPosition = Vector3.zero;
+
+		direction = Vector3.up - Vector3.right - Vector3.forward;
+		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, (-1f) * Vector3.forward, material, GenerateTexture(Color.yellow));
+		cubeFace.transform.SetParent(cube.transform);
+		cubeFace.transform.localPosition = Vector3.zero;
+
+		direction = Vector3.up + Vector3.right + Vector3.forward;
+		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.forward, material, GenerateTexture(Color.blue));
+		cubeFace.transform.SetParent(cube.transform);
+		cubeFace.transform.localPosition = Vector3.zero;
+
+        direction = Vector3.down + Vector3.right + Vector3.forward;
+        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.right, Vector3.forward, material, GenerateTexture(Color.green));
+        cubeFace.transform.SetParent(cube.transform);
+        cubeFace.transform.localPosition = Vector3.zero;
+
+        direction = Vector3.up + Vector3.right + Vector3.forward;
+		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.right, Vector3.forward, material, GenerateTexture(Color.magenta));
+        cubeFace.transform.SetParent(cube.transform);
+        cubeFace.transform.localPosition = Vector3.zero;
 
         // direction = Vector3.up + Vector3.right
         // cubeFace = GenerateFace(center + (0.5f) * Vector3.Scale(size, direction), direction, GenerateTexture(Color.red));
@@ -51,6 +76,7 @@ public static class CubeGeneration  {
 
 		meshFilter.mesh = mesh;
 		meshRenderer.material = material;
+		meshRenderer.material.mainTexture = texture;
 
 		return cubeFace;
     }
@@ -77,6 +103,8 @@ public static class CubeGeneration  {
                 texture.SetPixel(x, y, color);
             }
         }
+
+		texture.Apply ();
 
         return texture;
     }
