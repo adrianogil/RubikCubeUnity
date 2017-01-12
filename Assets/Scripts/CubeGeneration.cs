@@ -17,39 +17,43 @@ public static class CubeGeneration  {
         GameObject cubeFace = null;
         Vector3 direction = Vector3.zero;
 
+        Vector3 up = Vector3.Scale(size, Vector3.up),
+                down = Vector3.Scale(size, Vector3.down),
+                left = Vector3.Scale(size, Vector3.left),
+                right = Vector3.Scale(size, Vector3.right),
+                back = Vector3.Scale(size, Vector3.back),
+                forward = Vector3.Scale(size, Vector3.forward);
+
+
 		direction = Vector3.up + Vector3.right + Vector3.forward;
-        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.right, material, Color.red);
+        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), up, right, material, Color.red);
         cubeFace.transform.SetParent(cube.transform);
 		cubeFace.transform.localPosition = Vector3.zero;
 
         direction = Vector3.up + Vector3.right - Vector3.forward;
-        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.right, material, Color.white);
+        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), up, right, material, Color.white);
         cubeFace.transform.SetParent(cube.transform);
         cubeFace.transform.localPosition = Vector3.zero;
 
 		direction = Vector3.up - Vector3.right - Vector3.forward;
-		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, (-1f) * Vector3.forward, material, Color.yellow);
+		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), up, back, material, Color.yellow);
 		cubeFace.transform.SetParent(cube.transform);
 		cubeFace.transform.localPosition = Vector3.zero;
 
 		direction = Vector3.up + Vector3.right + Vector3.forward;
-		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.forward, material, Color.blue);
+		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), up, forward, material, Color.blue);
 		cubeFace.transform.SetParent(cube.transform);
 		cubeFace.transform.localPosition = Vector3.zero;
 
         direction = Vector3.down + Vector3.right + Vector3.forward;
-        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.right, Vector3.forward, material, Color.green);
+        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), right, forward, material, Color.green);
         cubeFace.transform.SetParent(cube.transform);
         cubeFace.transform.localPosition = Vector3.zero;
 
         direction = Vector3.up + Vector3.right + Vector3.forward;
-		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.right, Vector3.forward, material, Color.magenta);
+		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), right, forward, material, Color.magenta);
         cubeFace.transform.SetParent(cube.transform);
         cubeFace.transform.localPosition = Vector3.zero;
-
-        // direction = Vector3.up + Vector3.right
-        // cubeFace = GenerateFace(center + (0.5f) * Vector3.Scale(size, direction), direction, GenerateTexture(Color.red));
-        // cubeFace.transform.SetParent(cube.transform);
 
         return cube;
     }
