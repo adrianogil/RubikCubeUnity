@@ -18,32 +18,32 @@ public static class CubeGeneration  {
         Vector3 direction = Vector3.zero;
 
 		direction = Vector3.up + Vector3.right + Vector3.forward;
-        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.right, material, GenerateTexture(Color.red));
+        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.right, material, Color.red);
         cubeFace.transform.SetParent(cube.transform);
 		cubeFace.transform.localPosition = Vector3.zero;
 
         direction = Vector3.up + Vector3.right - Vector3.forward;
-        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.right, material, GenerateTexture(Color.white));
+        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.right, material, Color.white);
         cubeFace.transform.SetParent(cube.transform);
         cubeFace.transform.localPosition = Vector3.zero;
 
 		direction = Vector3.up - Vector3.right - Vector3.forward;
-		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, (-1f) * Vector3.forward, material, GenerateTexture(Color.yellow));
+		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, (-1f) * Vector3.forward, material, Color.yellow);
 		cubeFace.transform.SetParent(cube.transform);
 		cubeFace.transform.localPosition = Vector3.zero;
 
 		direction = Vector3.up + Vector3.right + Vector3.forward;
-		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.forward, material, GenerateTexture(Color.blue));
+		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.up, Vector3.forward, material, Color.blue);
 		cubeFace.transform.SetParent(cube.transform);
 		cubeFace.transform.localPosition = Vector3.zero;
 
         direction = Vector3.down + Vector3.right + Vector3.forward;
-        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.right, Vector3.forward, material, GenerateTexture(Color.green));
+        cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.right, Vector3.forward, material, Color.green);
         cubeFace.transform.SetParent(cube.transform);
         cubeFace.transform.localPosition = Vector3.zero;
 
         direction = Vector3.up + Vector3.right + Vector3.forward;
-		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.right, Vector3.forward, material, GenerateTexture(Color.magenta));
+		cubeFace = GenerateFace(center + (-0.5f) * Vector3.Scale(size, direction), Vector3.right, Vector3.forward, material, Color.magenta);
         cubeFace.transform.SetParent(cube.transform);
         cubeFace.transform.localPosition = Vector3.zero;
 
@@ -58,7 +58,7 @@ public static class CubeGeneration  {
 										  Vector3 direction1, 
                                           Vector3 direction2, 
                                           Material material, 
-                                          Texture texture) 
+                                          Color faceColor) 
     {
 		MeshBuilder meshBuilder = new MeshBuilder ();
 
@@ -80,7 +80,6 @@ public static class CubeGeneration  {
         meshBuilder.AddQuadTriangles(MeshFace.Both, 3, 6, 2, 7);
         meshBuilder.AddQuadTriangles(MeshFace.Both, 1, 3, 5, 6);
 
-
         meshBuilder.UVs.Add(new Vector2(0f, 0f));
         meshBuilder.UVs.Add(new Vector2(0.5f, 0.5f));
         meshBuilder.UVs.Add(new Vector2(0f, 0f));
@@ -98,7 +97,7 @@ public static class CubeGeneration  {
 
 		meshFilter.mesh = mesh;
 		meshRenderer.material = material;
-		meshRenderer.material.mainTexture = texture;
+		meshRenderer.material.SetColor("_FaceColor", faceColor);
 
 		return cubeFace;
     }
@@ -114,25 +113,5 @@ public static class CubeGeneration  {
             meshBuilder.AddTriangle(index1, index0, index2);
             meshBuilder.AddTriangle(index1, index2, index3);
         }
-    }
-
-    public static Texture GenerateTexture(Color color, int sizeX = 100, int sizeY = 100)
-    {
-        Texture2D texture = new Texture2D(sizeX, sizeY);
-
-        for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
-                if ( ((float)x) < 0.3f * sizeX || ((float)y) < 0.3f * sizeY) {
-                    texture.SetPixel(x, y, Color.black);
-                } else {
-                    texture.SetPixel(x, y, color);    
-                }
-                
-            }
-        }
-
-		texture.Apply ();
-
-        return texture;
     }
 }
