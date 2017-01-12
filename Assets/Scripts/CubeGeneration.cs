@@ -62,11 +62,33 @@ public static class CubeGeneration  {
     {
 		MeshBuilder meshBuilder = new MeshBuilder ();
 
+        float edgeFactor = 0.15f;
+        Vector3 middleVector = edgeFactor * (direction1 + direction2);
+
 		meshBuilder.Vertices.Add (position);
-		meshBuilder.Vertices.Add (position + direction1);
-		meshBuilder.Vertices.Add (position + direction2);
-		meshBuilder.Vertices.Add (position + direction1 + direction2);
+        meshBuilder.Vertices.Add (position + middleVector);
+        meshBuilder.Vertices.Add (position + direction2);
+        meshBuilder.Vertices.Add (position + middleVector + (1f - 2*edgeFactor) * direction2);
+        meshBuilder.Vertices.Add (position + direction1);
+        meshBuilder.Vertices.Add (position + middleVector + (1f - 2*edgeFactor) * direction1);
+        meshBuilder.Vertices.Add (position + direction1 + direction2 - middleVector);
+        meshBuilder.Vertices.Add (position + direction1 + direction2);
+
         meshBuilder.AddQuadTriangles(MeshFace.Both, 0, 1, 2, 3);
+        meshBuilder.AddQuadTriangles(MeshFace.Both, 0, 4, 1, 5);
+        meshBuilder.AddQuadTriangles(MeshFace.Both, 5, 4, 6, 7);
+        meshBuilder.AddQuadTriangles(MeshFace.Both, 3, 6, 2, 7);
+        meshBuilder.AddQuadTriangles(MeshFace.Both, 1, 3, 5, 6);
+
+
+        meshBuilder.UVs.Add(new Vector2(0f, 0f));
+        meshBuilder.UVs.Add(new Vector2(0.5f, 0.5f));
+        meshBuilder.UVs.Add(new Vector2(0f, 0f));
+        meshBuilder.UVs.Add(new Vector2(0.5f, 0.5f));
+        meshBuilder.UVs.Add(new Vector2(0f, 0f));
+        meshBuilder.UVs.Add(new Vector2(0.5f, 0.5f));
+        meshBuilder.UVs.Add(new Vector2(0.5f, 0.5f));
+        meshBuilder.UVs.Add(new Vector2(0f, 0f));
 
 		Mesh mesh = meshBuilder.CreateMesh ();
 
@@ -100,7 +122,12 @@ public static class CubeGeneration  {
 
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-                texture.SetPixel(x, y, color);
+                if ( ((float)x) < 0.3f * sizeX || ((float)y) < 0.3f * sizeY) {
+                    texture.SetPixel(x, y, Color.black);
+                } else {
+                    texture.SetPixel(x, y, color);    
+                }
+                
             }
         }
 
