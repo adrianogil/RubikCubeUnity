@@ -55,6 +55,9 @@ public static class CubeGeneration  {
         cubeFace.transform.SetParent(cube.transform);
         cubeFace.transform.localPosition = Vector3.zero;
 
+        cube.AddComponent<BoxCollider>().size = size;
+        cube.AddComponent<CubeSelection>();
+
         return cube;
     }
 

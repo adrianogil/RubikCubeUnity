@@ -6,6 +6,16 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
+public interface ICubeSelectionManager
+{
+	void Selected(int x, int y, int z);
+}
+
+public class CubeIndex
+{
+	public int x, y, z;
+}
+
 public class RubikCubeGenerator : MonoBehaviour {
 
 	public GameObject cubePrefab;
