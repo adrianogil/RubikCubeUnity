@@ -21,17 +21,19 @@ public class RubikCubeGenerator : MonoBehaviour {
 
 	public Vector3 sumCube;
 
+	public Vector3 cubesPerAxis;
 
 	void Awake() {
 		cubeMatrix = new GameObject[3, 3, 3];
 		cubeSize = Vector3.one;
+		// cubesPerAxis = 3 * Vector3.one;
 	}
 
 	// Use this for initialization
 	void Start () {
-		for (int x = 0; x < 3; x++) {
-			for (int y = 0; y < 3; y++) {
-				for (int z = 0; z < 3; z++) {
+		for (int x = 0; x < cubesPerAxis.x; x++) {
+			for (int y = 0; y < cubesPerAxis.y; y++) {
+				for (int z = 0; z < cubesPerAxis.z; z++) {
 					cubeMatrix [x, y, z] = CubeGeneration.Generate(Vector3.zero, cubeSize, material);
 					cubeMatrix [x, y, z].transform.SetParent (transform);
 					cubeMatrix [x, y, z].transform.localPosition = Vector3.Scale(cubeSize, new Vector3 (x, y, z));
