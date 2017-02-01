@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class CubeSelection : MonoBehaviour {
 
-    public ICubeSelectionManager selectionManager;
     public int x, y, z;
 
+    public Vector3 CubePosition { get { return new Vector3((float)x, (float)y, (float)z); }}
+
     private bool _selected;
+    public bool IsSelected { get { return _selected; }}
+
+    public void SetCubePosition(int indexX, int indexY, int indexZ) {
+        x = indexX;
+        y = indexY;
+        z = indexZ;
+    }
 
     private float _currenColorAnimationProgress;
 
@@ -45,11 +53,6 @@ public class CubeSelection : MonoBehaviour {
         {
             SetEdgeColor(Color.Lerp(Color.black, Color.white, Mathf.PingPong(Time.time, 1f)));
         }
-    }
-
-    public void OnSelected()
-    {
-        selectionManager.Selected(x, y, z);
     }
 
     private void SetEdgeColor(Color color)

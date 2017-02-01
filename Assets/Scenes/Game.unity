@@ -139,7 +139,7 @@ MonoBehaviour:
   rotationFace: {x: 0, y: 0, z: 0}
   angle: 0
   sumCube: {x: 0, y: 0, z: 0}
-  cubesPerAxis: {x: 1, y: 1, z: 1}
+  cubesPerAxis: {x: 3, y: 3, z: 3}
 --- !u!114 &204264843
 MonoBehaviour:
   m_ObjectHideFlags: 0

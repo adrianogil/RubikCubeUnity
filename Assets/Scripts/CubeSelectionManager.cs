@@ -4,9 +4,37 @@ using UnityEngine;
 
 public class CubeSelectionManager : MonoBehaviour {
 
+    enum SelectionMode
+    {
+        AxisX, AxisY, AxisZ, None
+    }
+
+    SelectionMode[] _modes;
+    Vector3[] _faceDirectionByAxis;
+
+    int _currentMode = 0;
+
+    RubikCubeGenerator cubeGenerator;
+
 	// Use this for initialization
 	void Start () {
-		
+		_modes = new SelectionMode[] {
+            SelectionMode.None,
+            SelectionMode.AxisX,
+            SelectionMode.AxisY,
+            SelectionMode.AxisZ
+        };
+
+        _faceDirectionByAxis = new Vector3[] {
+            Vector3.zero,
+            new Vector3(1f, 0f, 0f),
+            new Vector3(0f, 1f, 0f),
+            new Vector3(0f, 0f, 1f)
+        };
+
+        _currentMode = 0;
+
+        cubeGenerator = GetComponent<RubikCubeGenerator>();
 	}
 	
 	// Update is called once per frame
@@ -23,9 +51,21 @@ public class CubeSelectionManager : MonoBehaviour {
                 CubeSelection cubeSelection = null;
 
                 if ((cubeSelection = hitInfo.collider.gameObject.GetComponent<CubeSelection>()) != null) {
-                    cubeSelection.ToggleCubeSelection();
+                    SelectCubes(cubeSelection.CubePosition);
                 }
             }
         }
 	}
+
+
+    void SelectCubes(Vector3 cubePosition)
+    {
+        List<CubeSelection> cubes = cubeGenerator.GetCubesFrom(cubePosition, _faceDirectionByAxis[1]);
+
+        for (int i = 0; i < cubes.Count; i++)
+        {
+            cubes[i].ToggleCubeSelection();
+        }
+    }
+
 }
