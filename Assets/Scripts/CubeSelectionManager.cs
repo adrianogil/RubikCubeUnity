@@ -16,6 +16,8 @@ public class CubeSelectionManager : MonoBehaviour {
 
     RubikCubeGenerator cubeGenerator;
 
+    List<CubeSelection> lastCubes = null;
+
 	// Use this for initialization
 	void Start () {
 		_modes = new SelectionMode[] {
@@ -51,12 +53,22 @@ public class CubeSelectionManager : MonoBehaviour {
                 CubeSelection cubeSelection = null;
 
                 if ((cubeSelection = hitInfo.collider.gameObject.GetComponent<CubeSelection>()) != null) {
+                    UnselectLastCubes();
                     SelectCubes(cubeSelection.CubePosition);
                 }
             }
         }
 	}
 
+    void UnselectLastCubes()
+    {
+        if (lastCubes == null) return;
+
+        for (int i = 0; i < lastCubes.Count; i++)
+        {
+            lastCubes[i].ToggleCubeSelection();
+        }
+    }
 
     void SelectCubes(Vector3 cubePosition)
     {
@@ -66,6 +78,8 @@ public class CubeSelectionManager : MonoBehaviour {
         {
             cubes[i].ToggleCubeSelection();
         }
+
+        lastCubes = cubes;
     }
 
 }
