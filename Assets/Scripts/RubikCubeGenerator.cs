@@ -41,7 +41,7 @@ public class RubikCubeGenerator : MonoBehaviour {
 				for (int z = 0; z < cubesPerAxis.z; z++) {
 					cubeMatrix [x, y, z] = CubeGeneration.Generate(Vector3.zero, cubeSize, material);
 					cubeMatrix [x, y, z].transform.SetParent (transform);
-					cubeMatrix [x, y, z].transform.localPosition = Vector3.Scale(cubeSize, new Vector3 (x, y, z));
+					cubeMatrix [x, y, z].transform.localPosition = (-1f) * cubeSize + Vector3.Scale(cubeSize, new Vector3 (x, y, z));
 					cubeMatrix [x, y, z].GetComponent<CubeSelection>().SetCubePosition(x, y, z);
 				}
 			}
@@ -120,7 +120,8 @@ public class RubikCubeGenerator : MonoBehaviour {
 
 		sumCube = (1 / 27f) * sumCube;
 
-		rotateTempObject.transform.localPosition = sumCube;
+		rotateTempObject.transform.localPosition = sumCube - cubeSize;
+		rotateTempObject.transform.localEulerAngles = Vector3.zero;
 
 		for (int x = 0; x < 3; x++) {
 			for (int y = 0; y < 3; y++) {
@@ -134,7 +135,7 @@ public class RubikCubeGenerator : MonoBehaviour {
 			}
 		}
 
-		rotateTempObject.transform.Rotate (angle * rotationFace);
+		rotateTempObject.transform.Rotate (angle * rotationFace, Space.Self);
 	}
 	
 	// Update is called once per frame
@@ -144,7 +145,7 @@ public class RubikCubeGenerator : MonoBehaviour {
 
 	void OnDrawGizmosSelected() {
 		Gizmos.color = new Color(1, 0, 0, 0.5F);
-		Gizmos.DrawCube(cubePosition+transform.position, new Vector3(1, 1, 1));
+		Gizmos.DrawCube(cubePosition+transform.position-cubeSize, new Vector3(1, 1, 1));
 	}
 }
 

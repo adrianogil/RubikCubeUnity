@@ -18,6 +18,13 @@ public class CubeSelectionManager : MonoBehaviour {
 
     List<CubeSelection> lastCubes = null;
 
+    bool isBackgroundMove = false;
+    Vector3 backgroundMoveStart, lastMove;
+
+    public float pixelToRotationFactor = 0.5f;
+
+    Vector3 lastCubePosition;
+
 	// Use this for initialization
 	void Start () {
 		_modes = new SelectionMode[] {
@@ -41,20 +48,86 @@ public class CubeSelectionManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetMouseButtonDown(0)) {
-            Debug.Log("GilLog - CubeSelectionManager::Update - Mouse is down");
+        if (isBackgroundMove)
+        {
+            if (Input.GetMouseButtonUp(0))
+            {
+                isBackgroundMove = false;
+            }
+            else if (Input.GetMouseButton(0))
+            {
+                Vector3 diff = Input.mousePosition - lastMove;
+                Vector3 diffFromStart = Input.mousePosition - backgroundMoveStart;
 
-            RaycastHit hitInfo = new RaycastHit();
-            bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo);
+                if ( Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
+                {
+                    transform.Rotate(Vector3.up, pixelToRotationFactor * diff.x, Space.World);
+                } else if ( Mathf.Abs(diff.y) > Mathf.Abs(diff.x)) {
+                    transform.Rotate(Vector3.right, pixelToRotationFactor * diff.y, Space.World);
+                }
 
-            if (hit) {
-                Debug.Log("GilLog - CubeSelectionManager::Update - hit " + hitInfo.collider.gameObject.name);
+                // if ( Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
+                // {
+                //     transform.Rotate(transform.up, pixelToRotationFactor * diff.x);
+                // } else if ( Mathf.Abs(diff.y) > Mathf.Abs(diff.x)) {
+                //     transform.Rotate(transform.right, pixelToRotationFactor * diff.y);
+                // }
+            }
 
-                CubeSelection cubeSelection = null;
+            lastMove = Input.mousePosition;
+        }
+		else { 
+            if (lastCubes != null) 
+            {
+               if (Input.GetMouseButtonUp(0))
+                {
+                    isBackgroundMove = false;
+                }
+                else if (Input.GetMouseButton(0))
+                {
+                    Vector3 diff = Input.mousePosition - lastMove;
+                    Vector3 diffFromStart = Input.mousePosition - backgroundMoveStart;
 
-                if ((cubeSelection = hitInfo.collider.gameObject.GetComponent<CubeSelection>()) != null) {
+                    if ( Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
+                    {
+                        cubeGenerator.RotateCubes(lastCubePosition, _faceDirectionByAxis[1], pixelToRotationFactor * diff.x);
+                        //transform.Rotate(Vector3.up, pixelToRotationFactor * diff.x, Space.Self);
+                    } else if ( Mathf.Abs(diff.y) > Mathf.Abs(diff.x)) {
+                        //transform.Rotate(Vector3.right, pixelToRotationFactor * diff.y, Space.Self);
+                        cubeGenerator.RotateCubes(lastCubePosition, _faceDirectionByAxis[1], pixelToRotationFactor * diff.y);
+                    }
+
+                    // if ( Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
+                    // {
+                    //     transform.Rotate(transform.up, pixelToRotationFactor * diff.x);
+                    // } else if ( Mathf.Abs(diff.y) > Mathf.Abs(diff.x)) {
+                    //     transform.Rotate(transform.right, pixelToRotationFactor * diff.y);
+                    // }
+                }
+
+                lastMove = Input.mousePosition;
+            }
+            if (Input.GetMouseButtonDown(0)) {
+                Debug.Log("GilLog - CubeSelectionManager::Update - Mouse is down");
+
+                RaycastHit hitInfo = new RaycastHit();
+                bool hit = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo);
+
+                if (hit) {
+                    Debug.Log("GilLog - CubeSelectionManager::Update - hit " + hitInfo.collider.gameObject.name);
+
+                    CubeSelection cubeSelection = null;
+
+                    if ((cubeSelection = hitInfo.collider.gameObject.GetComponent<CubeSelection>()) != null) {
+                        UnselectLastCubes();
+                        SelectCubes(cubeSelection.CubePosition);
+                    }
+                } else {
                     UnselectLastCubes();
-                    SelectCubes(cubeSelection.CubePosition);
+                    isBackgroundMove = true;
+
+                    backgroundMoveStart = Input.mousePosition;
+                    lastMove = Input.mousePosition;
                 }
             }
         }
@@ -68,10 +141,14 @@ public class CubeSelectionManager : MonoBehaviour {
         {
             lastCubes[i].ToggleCubeSelection();
         }
+
+        lastCubes = null;
     }
 
     void SelectCubes(Vector3 cubePosition)
     {
+        lastCubePosition = cubePosition;
+
         List<CubeSelection> cubes = cubeGenerator.GetCubesFrom(cubePosition, _faceDirectionByAxis[1]);
 
         for (int i = 0; i < cubes.Count; i++)
