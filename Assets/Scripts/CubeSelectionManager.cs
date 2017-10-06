@@ -25,6 +25,10 @@ public class CubeSelectionManager : MonoBehaviour {
 
     Vector3 lastCubePosition;
 
+    private float accumulated_Angles;
+    private const float MAX_ANGLE_VELOCITY = 15f;
+    private int m_lastAxisRotation = -1;
+
 	// Use this for initialization
 	void Start () {
 		_modes = new SelectionMode[] {
@@ -61,8 +65,10 @@ public class CubeSelectionManager : MonoBehaviour {
 
                 if ( Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
                 {
+                    
                     transform.Rotate(Vector3.up, pixelToRotationFactor * diff.x, Space.World);
                 } else if ( Mathf.Abs(diff.y) > Mathf.Abs(diff.x)) {
+                    // CubeFaceRotation(pixelToRotationFactor * diff.y, 2);
                     transform.Rotate(Vector3.right, pixelToRotationFactor * diff.y, Space.World);
                 }
 
@@ -81,7 +87,11 @@ public class CubeSelectionManager : MonoBehaviour {
             {
                if (Input.GetMouseButtonUp(0))
                 {
+                    UnselectLastCubes();
+                    SnapCubeRotation();
+                    lastCubes = null;
                     isBackgroundMove = false;
+
                 }
                 else if (Input.GetMouseButton(0))
                 {
@@ -90,11 +100,13 @@ public class CubeSelectionManager : MonoBehaviour {
 
                     if ( Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
                     {
-                        cubeGenerator.RotateCubes(lastCubePosition, _faceDirectionByAxis[1], pixelToRotationFactor * diff.x);
+                        CubeFaceRotation(pixelToRotationFactor * diff.x, 1);
+                        // cubeGenerator.RotateCubes(lastCubePosition, _faceDirectionByAxis[1], pixelToRotationFactor * diff.x);
                         //transform.Rotate(Vector3.up, pixelToRotationFactor * diff.x, Space.Self);
                     } else if ( Mathf.Abs(diff.y) > Mathf.Abs(diff.x)) {
+                        CubeFaceRotation(pixelToRotationFactor * diff.y, 1);
                         //transform.Rotate(Vector3.right, pixelToRotationFactor * diff.y, Space.Self);
-                        cubeGenerator.RotateCubes(lastCubePosition, _faceDirectionByAxis[1], pixelToRotationFactor * diff.y);
+                        // cubeGenerator.RotateCubes(lastCubePosition, _faceDirectionByAxis[2], pixelToRotationFactor * diff.y);
                     }
 
                     // if ( Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
@@ -107,7 +119,7 @@ public class CubeSelectionManager : MonoBehaviour {
 
                 lastMove = Input.mousePosition;
             }
-            if (Input.GetMouseButtonDown(0)) {
+            else if (Input.GetMouseButtonDown(0)) {
                 Debug.Log("GilLog - CubeSelectionManager::Update - Mouse is down");
 
                 RaycastHit hitInfo = new RaycastHit();
@@ -124,6 +136,7 @@ public class CubeSelectionManager : MonoBehaviour {
                     }
                 } else {
                     UnselectLastCubes();
+                    lastCubes = null;
                     isBackgroundMove = true;
 
                     backgroundMoveStart = Input.mousePosition;
@@ -132,6 +145,32 @@ public class CubeSelectionManager : MonoBehaviour {
             }
         }
 	}
+
+    void CubeFaceRotation(float angles, int axis)
+    {
+        Vector3 faceRotation = _faceDirectionByAxis[axis];
+
+        faceRotation =  transform.rotation * faceRotation;
+
+        if (faceRotation.x > faceRotation.y && faceRotation.x > faceRotation.z)
+        {
+            faceRotation = _faceDirectionByAxis[1];
+        } else if (faceRotation.y > faceRotation.x && faceRotation.y > faceRotation.z)
+        {
+            faceRotation = _faceDirectionByAxis[2];
+        } else {
+            faceRotation = _faceDirectionByAxis[3];
+        }
+
+        // ACCUMULATES ROTATIONS
+        if (Mathf.Abs(angles) < MAX_ANGLE_VELOCITY)
+        {
+            cubeGenerator.RotateCubes(lastCubePosition, faceRotation, angles);    
+
+            accumulated_Angles += angles;
+            m_lastAxisRotation = axis;
+        }
+    }
 
     void UnselectLastCubes()
     {
@@ -143,6 +182,37 @@ public class CubeSelectionManager : MonoBehaviour {
         }
 
         lastCubes = null;
+    }
+
+    void SnapCubeRotation()
+    {
+        if (m_lastAxisRotation != -1 && Mathf.Abs(accumulated_Angles) > 0.01f)
+        {
+            Vector3 faceRotation = _faceDirectionByAxis[m_lastAxisRotation];
+
+            faceRotation =  transform.rotation * faceRotation;
+
+            if (faceRotation.x > faceRotation.y && faceRotation.x > faceRotation.z)
+            {
+                faceRotation = _faceDirectionByAxis[1];
+            } else if (faceRotation.y > faceRotation.x && faceRotation.y > faceRotation.z)
+            {
+                faceRotation = _faceDirectionByAxis[2];
+            } else {
+                faceRotation = _faceDirectionByAxis[3];
+            }
+
+            float currentAngles = accumulated_Angles;
+            float nextAngle = Mathf.Round(currentAngles / 90f) * 90f;
+            currentAngles = nextAngle - accumulated_Angles;
+
+            Debug.Log("GilLog - CubeSelectionManager::SnapCubeRotation - currentAngles " + currentAngles + " ");
+
+            cubeGenerator.RotateCubes(lastCubePosition, faceRotation, currentAngles);
+
+            accumulated_Angles = 0;
+            m_lastAxisRotation = -1;
+        }
     }
 
     void SelectCubes(Vector3 cubePosition)
